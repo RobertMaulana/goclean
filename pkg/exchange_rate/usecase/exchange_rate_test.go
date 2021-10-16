@@ -2,6 +2,7 @@ package usecase_test
 
 import (
 	"context"
+	"errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"goclean/pkg/domain"
@@ -38,18 +39,41 @@ func TestGetExchangeRateByDate(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		mockExchangeRateRepo.On("GetExchangeRateByDate", mock.Anything, mock.AnythingOfType("string"),
-			mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(mockListExchangeRate, "next-cursor", nil).Once()
+			mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(mockListExchangeRate,
+				"next-cursor", nil).Once()
 
 		ucase := usecase.NewExchangeRateUsecase(mockExchangeRateRepo, time.Second * 2)
 		startDate := "2021-12-02"
 		endDate := "2021-12-02"
 		cursor := "12"
+
 		list, nextCursor, err := ucase.GetExchangeRateByDate(context.TODO(), cursor, startDate, endDate)
 		cursorExpected := "next-cursor"
+
 		assert.Equal(t, cursorExpected, nextCursor)
 		assert.NotEmpty(t, nextCursor)
 		assert.NoError(t, err)
 		assert.Len(t, list, len(mockListExchangeRate))
+
+		mockExchangeRateRepo.AssertExpectations(t)
+	})
+
+	t.Run("error", func(t *testing.T) {
+		mockExchangeRateRepo.On("GetExchangeRateByDate", mock.Anything, mock.AnythingOfType("string"),
+			mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil, "",
+				errors.New("unexpected error")).Once()
+
+		mockExchangeRateRepo := new(mocks.ExchangeRateRepository)
+		ucase := usecase.NewExchangeRateUsecase(mockExchangeRateRepo, time.Second * 2)
+		startDate := "2021-12-02"
+		endDate := "2021-12-02"
+		cursor := "12"
+
+		list, nextCursor, err := ucase.GetExchangeRateByDate(context.TODO(), cursor, startDate, endDate)
+
+		assert.Empty(t, nextCursor)
+		assert.Error(t, err)
+		assert.Len(t, list, 0)
 
 		mockExchangeRateRepo.AssertExpectations(t)
 	})
