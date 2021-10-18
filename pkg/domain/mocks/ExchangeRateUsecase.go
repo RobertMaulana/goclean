@@ -120,13 +120,13 @@ func (_m *ExchangeRateUsecase) GetExchangeRateBySingleDateOnly(ctx context.Conte
 	return r0, r1
 }
 
-// Indexing provides a mock function with given fields: ctx, payload
-func (_m *ExchangeRateUsecase) Indexing(ctx context.Context, payload []domain.ExchangeRate) error {
-	ret := _m.Called(ctx, payload)
+// Indexing provides a mock function with given fields: ctx
+func (_m *ExchangeRateUsecase) Indexing(ctx context.Context) error {
+	ret := _m.Called(ctx)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, []domain.ExchangeRate) error); ok {
-		r0 = rf(ctx, payload)
+	if rf, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = rf(ctx)
 	} else {
 		r0 = ret.Error(0)
 	}

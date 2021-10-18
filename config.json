@@ -7,7 +7,7 @@
     "api": "/api"
   },
   "context":{
-    "timeout":2
+    "timeout": 30
   },
   "database": {
     "host": "localhost",

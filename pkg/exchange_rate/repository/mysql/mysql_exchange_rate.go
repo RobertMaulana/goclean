@@ -17,7 +17,7 @@ func NewMysqlExchangeRateRepository(Conn *sql.DB) domain.ExchangeRateRepository 
 	return &mysqlExchangeRateRepository{Conn}
 }
 
-func (m *mysqlExchangeRateRepository) Indexing(ctx context.Context, payload []domain.ExchangeRate) error {
+func (m *mysqlExchangeRateRepository) Indexing(ctx context.Context) error {
 	panic("implement me")
 }
 

@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
 	"goclean/pkg/domain"
@@ -19,11 +18,23 @@ type ExchangeRateHandler struct {
 
 func NewExchangeRateHandler(e *echo.Echo, exc domain.ExchangeRateUsecase, base string) {
 	handler := &ExchangeRateHandler{ExchangeRateUsecase:exc}
+	e.GET(base + "/indexing", handler.Indexing)
 	e.GET(base + "/kurs/:symbol", handler.GetExchangeRateByCurrency)
 	e.DELETE(base + "/kurs/curr/:date", handler.Delete)
 	e.GET(base + "/kurs", handler.GetExchangeRateByDate)
 	e.POST(base + "/kurs", handler.Store)
 	e.PUT(base + "/kurs", handler.Update)
+}
+
+func (h *ExchangeRateHandler) Indexing(context echo.Context) error {
+	ctx := context.Request().Context()
+
+	err := h.ExchangeRateUsecase.Indexing(ctx)
+	if err != nil {
+		return context.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+	}
+
+	return context.JSON(http.StatusOK, ResponseError{Message: "Done!"})
 }
 
 func (h *ExchangeRateHandler) GetExchangeRateByDate(context echo.Context) error {
@@ -107,8 +118,6 @@ func (h *ExchangeRateHandler) Update(context echo.Context) (err error) {
 func (h *ExchangeRateHandler) Delete(context echo.Context) (err error) {
 	date := context.Param("date")
 	ctx := context.Request().Context()
-
-	fmt.Printf("date %#v \n", date)
 
 	err = h.ExchangeRateUsecase.Delete(ctx, date)
 	if err != nil {
