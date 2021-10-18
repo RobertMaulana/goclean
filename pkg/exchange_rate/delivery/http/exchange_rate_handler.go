@@ -1,9 +1,11 @@
 package http
 
 import (
+	"fmt"
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
 	"goclean/pkg/domain"
+	validator "gopkg.in/go-playground/validator.v9"
 	"net/http"
 )
 
@@ -17,11 +19,11 @@ type ExchangeRateHandler struct {
 
 func NewExchangeRateHandler(e *echo.Echo, exc domain.ExchangeRateUsecase, base string) {
 	handler := &ExchangeRateHandler{ExchangeRateUsecase:exc}
+	e.GET(base + "/kurs/:symbol", handler.GetExchangeRateByCurrency)
+	e.DELETE(base + "/kurs/curr/:date", handler.Delete)
 	e.GET(base + "/kurs", handler.GetExchangeRateByDate)
-	e.GET(base + "/kurs/", handler.GetExchangeRateByCurrency)
 	e.POST(base + "/kurs", handler.Store)
 	e.PUT(base + "/kurs", handler.Update)
-	e.DELETE(base + "/kurs/", handler.Delete)
 }
 
 func (h *ExchangeRateHandler) GetExchangeRateByDate(context echo.Context) error {
@@ -38,19 +40,82 @@ func (h *ExchangeRateHandler) GetExchangeRateByDate(context echo.Context) error 
 }
 
 func (h *ExchangeRateHandler) GetExchangeRateByCurrency(context echo.Context) error {
-	panic("implement me")
+	currency := context.Param("symbol")
+	startDate := context.QueryParam("startdate")
+	endDate := context.QueryParam("enddate")
+	ctx := context.Request().Context()
+
+	listArr, err := h.ExchangeRateUsecase.GetExchangeRateByCurrency(ctx, currency, startDate, endDate)
+	if err != nil {
+		return context.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+	}
+
+	return context.JSON(http.StatusOK, listArr)
 }
 
-func (h *ExchangeRateHandler) Store(context echo.Context) error {
-	panic("implement me")
+func isRequestValid(m *domain.ExchangeRate) (bool, error) {
+	validate := validator.New()
+	err := validate.Struct(m)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
-func (h *ExchangeRateHandler) Update(context echo.Context) error {
-	panic("implement me")
+func (h *ExchangeRateHandler) Store(context echo.Context) (err error) {
+	var exchangeRate domain.ExchangeRate
+	err = context.Bind(&exchangeRate)
+	if err != nil {
+		return context.JSON(http.StatusUnprocessableEntity, err.Error())
+	}
+
+	var ok bool
+	if ok, err = isRequestValid(&exchangeRate); !ok {
+		return context.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	ctx := context.Request().Context()
+	err = h.ExchangeRateUsecase.Store(ctx, &exchangeRate)
+	if err != nil {
+		return context.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+	}
+
+	return context.JSON(http.StatusCreated, exchangeRate)
 }
 
-func (h *ExchangeRateHandler) Delete(context echo.Context) error {
-	panic("implement me")
+func (h *ExchangeRateHandler) Update(context echo.Context) (err error) {
+	var exchangeRate domain.ExchangeRate
+	err = context.Bind(&exchangeRate)
+	if err != nil {
+		return context.JSON(http.StatusUnprocessableEntity, err.Error())
+	}
+
+	var ok bool
+	if ok, err = isRequestValid(&exchangeRate); !ok {
+		return context.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	ctx := context.Request().Context()
+	err = h.ExchangeRateUsecase.Update(ctx, &exchangeRate)
+	if err != nil {
+		return context.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+	}
+
+	return context.JSON(http.StatusCreated, exchangeRate)
+}
+
+func (h *ExchangeRateHandler) Delete(context echo.Context) (err error) {
+	date := context.Param("date")
+	ctx := context.Request().Context()
+
+	fmt.Printf("date %#v \n", date)
+
+	err = h.ExchangeRateUsecase.Delete(ctx, date)
+	if err != nil {
+		return context.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+	}
+
+	return context.JSON(http.StatusOK, ResponseError{Message: "Item removed"})
 }
 
 func getStatusCode(err error) int {

@@ -14,13 +14,13 @@ type ExchangeRateRepository struct {
 	mock.Mock
 }
 
-// Delete provides a mock function with given fields: ctx, id
-func (_m *ExchangeRateRepository) Delete(ctx context.Context, id int64) error {
-	ret := _m.Called(ctx, id)
+// Delete provides a mock function with given fields: ctx, date
+func (_m *ExchangeRateRepository) Delete(ctx context.Context, date string) error {
+	ret := _m.Called(ctx, date)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) error); ok {
-		r0 = rf(ctx, id)
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, date)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -28,13 +28,13 @@ func (_m *ExchangeRateRepository) Delete(ctx context.Context, id int64) error {
 	return r0
 }
 
-// GetExchangeRateByCurrency provides a mock function with given fields: ctx, currency, startDate, endDate
-func (_m *ExchangeRateRepository) GetExchangeRateByCurrency(ctx context.Context, currency string, startDate string, endDate string) ([]domain.ExchangeRate, error) {
-	ret := _m.Called(ctx, currency, startDate, endDate)
+// GetExchangeRateByCurrency provides a mock function with given fields: ctx, symbol, startDate, endDate
+func (_m *ExchangeRateRepository) GetExchangeRateByCurrency(ctx context.Context, symbol string, startDate string, endDate string) ([]domain.ExchangeRate, error) {
+	ret := _m.Called(ctx, symbol, startDate, endDate)
 
 	var r0 []domain.ExchangeRate
 	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) []domain.ExchangeRate); ok {
-		r0 = rf(ctx, currency, startDate, endDate)
+		r0 = rf(ctx, symbol, startDate, endDate)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]domain.ExchangeRate)
@@ -43,7 +43,7 @@ func (_m *ExchangeRateRepository) GetExchangeRateByCurrency(ctx context.Context,
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, string, string, string) error); ok {
-		r1 = rf(ctx, currency, startDate, endDate)
+		r1 = rf(ctx, symbol, startDate, endDate)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -67,6 +67,52 @@ func (_m *ExchangeRateRepository) GetExchangeRateByDate(ctx context.Context, sta
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
 		r1 = rf(ctx, startDate, endDate)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetExchangeRateBySingleDate provides a mock function with given fields: ctx, symbol, date
+func (_m *ExchangeRateRepository) GetExchangeRateBySingleDate(ctx context.Context, symbol string, date string) ([]domain.ExchangeRate, error) {
+	ret := _m.Called(ctx, symbol, date)
+
+	var r0 []domain.ExchangeRate
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) []domain.ExchangeRate); ok {
+		r0 = rf(ctx, symbol, date)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]domain.ExchangeRate)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, symbol, date)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetExchangeRateBySingleDateOnly provides a mock function with given fields: ctx, date
+func (_m *ExchangeRateRepository) GetExchangeRateBySingleDateOnly(ctx context.Context, date string) ([]domain.ExchangeRate, error) {
+	ret := _m.Called(ctx, date)
+
+	var r0 []domain.ExchangeRate
+	if rf, ok := ret.Get(0).(func(context.Context, string) []domain.ExchangeRate); ok {
+		r0 = rf(ctx, date)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]domain.ExchangeRate)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, date)
 	} else {
 		r1 = ret.Error(1)
 	}
