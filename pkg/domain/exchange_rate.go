@@ -24,8 +24,8 @@ type ExchangeRateDetail struct {
 
 type ExchangeRateUsecase interface {
 	Indexing(ctx context.Context, payload []ExchangeRate) error
-	GetExchangeRateByDate(ctx context.Context, cursor string, startDate string, endDate string) (resp []ExchangeRate, nextCursor string, err error)
-	GetExchangeRateByCurrency(ctx context.Context, cursor string, currency string, startDate string, endDate string) (resp []ExchangeRate, nextCursor string, err error)
+	GetExchangeRateByDate(ctx context.Context, startDate string, endDate string) (resp []ExchangeRate, err error)
+	GetExchangeRateByCurrency(ctx context.Context, currency string, startDate string, endDate string) (resp []ExchangeRate, err error)
 	Store(ctx context.Context, payload *ExchangeRate) error
 	Update(ctx context.Context, payload *ExchangeRate) error
 	Delete(ctx context.Context, id int64) error
@@ -34,8 +34,8 @@ type ExchangeRateUsecase interface {
 // ExchangeRateRepository represent the exchange rate's repository contract
 type ExchangeRateRepository interface {
 	Indexing(ctx context.Context, payload []ExchangeRate) error
-	GetExchangeRateByDate(ctx context.Context, cursor string, startDate string, endDate string) (resp []ExchangeRate, nextCursor string, err error)
-	GetExchangeRateByCurrency(ctx context.Context, cursor string, currency string, startDate string, endDate string) (resp []ExchangeRate, nextCursor string, err error)
+	GetExchangeRateByDate(ctx context.Context, startDate string, endDate string) (resp []ExchangeRate, err error)
+	GetExchangeRateByCurrency(ctx context.Context, currency string, startDate string, endDate string) (resp []ExchangeRate, err error)
 	Store(ctx context.Context, payload *ExchangeRate) error
 	Update(ctx context.Context, payload *ExchangeRate) error
 	Delete(ctx context.Context, id int64) error

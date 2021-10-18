@@ -39,19 +39,14 @@ func TestGetExchangeRateByDate(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		mockExchangeRateRepo.On("GetExchangeRateByDate", mock.Anything, mock.AnythingOfType("string"),
-			mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(mockListExchangeRate,
-				"next-cursor", nil).Once()
+			mock.AnythingOfType("string")).Return(mockListExchangeRate, nil).Once()
 
 		ucase := usecase.NewExchangeRateUsecase(mockExchangeRateRepo, time.Second * 2)
 		startDate := "2021-12-02"
 		endDate := "2021-12-02"
-		cursor := "12"
 
-		list, nextCursor, err := ucase.GetExchangeRateByDate(context.TODO(), cursor, startDate, endDate)
-		cursorExpected := "next-cursor"
+		list, err := ucase.GetExchangeRateByDate(context.TODO(), startDate, endDate)
 
-		assert.Equal(t, cursorExpected, nextCursor)
-		assert.NotEmpty(t, nextCursor)
 		assert.NoError(t, err)
 		assert.Len(t, list, len(mockListExchangeRate))
 
@@ -60,18 +55,15 @@ func TestGetExchangeRateByDate(t *testing.T) {
 
 	t.Run("error", func(t *testing.T) {
 		mockExchangeRateRepo.On("GetExchangeRateByDate", mock.Anything, mock.AnythingOfType("string"),
-			mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil, "",
+			mock.AnythingOfType("string")).Return(nil,
 				errors.New("unexpected error")).Once()
 
-		mockExchangeRateRepo := new(mocks.ExchangeRateRepository)
 		ucase := usecase.NewExchangeRateUsecase(mockExchangeRateRepo, time.Second * 2)
 		startDate := "2021-12-02"
 		endDate := "2021-12-02"
-		cursor := "12"
 
-		list, nextCursor, err := ucase.GetExchangeRateByDate(context.TODO(), cursor, startDate, endDate)
+		list, err := ucase.GetExchangeRateByDate(context.TODO(), startDate, endDate)
 
-		assert.Empty(t, nextCursor)
 		assert.Error(t, err)
 		assert.Len(t, list, 0)
 

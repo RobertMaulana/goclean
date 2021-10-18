@@ -60,17 +60,20 @@ func (m *mysqlExchangeRateRepository) fetch(ctx context.Context, query string, a
 	return result, nil
 }
 
-func (m *mysqlExchangeRateRepository) GetExchangeRateByDate(ctx context.Context, cursor string, startDate string, endDate string) (resp []domain.ExchangeRate, nextCursor string, err error) {
+func (m *mysqlExchangeRateRepository) GetExchangeRateByDate(ctx context.Context, startDate string, endDate string) (resp []domain.ExchangeRate, err error) {
 	resp, err = m.fetch(ctx, query.GetExchangeRateByDate, startDate, endDate)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
-	nextCursor = "next-cursor"
 	return
 }
 
-func (m mysqlExchangeRateRepository) GetExchangeRateByCurrency(ctx context.Context, cursor string, currency string, startDate string, endDate string) (resp []domain.ExchangeRate, nextCursor string, err error) {
-	panic("implement me")
+func (m mysqlExchangeRateRepository) GetExchangeRateByCurrency(ctx context.Context, currency string, startDate string, endDate string) (resp []domain.ExchangeRate, err error) {
+	resp, err = m.fetch(ctx, query.GetExchangeRateByCurrency, currency, startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
+	return
 }
 
 func (m mysqlExchangeRateRepository) Store(ctx context.Context, payload *domain.ExchangeRate) error {

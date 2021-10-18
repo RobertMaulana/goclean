@@ -27,15 +27,13 @@ func NewExchangeRateHandler(e *echo.Echo, exc domain.ExchangeRateUsecase, base s
 func (h *ExchangeRateHandler) GetExchangeRateByDate(context echo.Context) error {
 	startDate := context.QueryParam("startdate")
 	endDate := context.QueryParam("enddate")
-	cursor := "12"
 	ctx := context.Request().Context()
 
-	listArr, nextCursor, err := h.ExchangeRateUsecase.GetExchangeRateByDate(ctx,cursor, startDate, endDate)
+	listArr, err := h.ExchangeRateUsecase.GetExchangeRateByDate(ctx, startDate, endDate)
 	if err != nil {
 		return context.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
 	}
 
-	context.Response().Header().Set(`X-Cursor`, nextCursor)
 	return context.JSON(http.StatusOK, listArr)
 }
 
