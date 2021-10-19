@@ -55,3 +55,4 @@ Credit -> **Uncle Bob**
 - [ ] Centralize config
 - [ ] Repository unit test
 - [ ] Helpers unit test
+- [ ] Goroutine & channel implementation for scrapping data
