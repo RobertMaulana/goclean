@@ -14,7 +14,7 @@ RUN apk update && apk upgrade && \
     mkdir /app
 WORKDIR /app
 
-EXPOSE 8080
+EXPOSE 7000
 
 COPY --from=builder /app/engine /app
 CMD /app/engine

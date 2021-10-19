@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: goclean
     ports:
-      - 8080:8080
+      - 7000:7000
     depends_on:
       mysql:
         condition: service_healthy
