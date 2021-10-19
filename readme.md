@@ -55,4 +55,5 @@ Credit -> **Uncle Bob**
 - [ ] Centralize config
 - [ ] Repository unit test
 - [ ] Helpers unit test
+- [ ] More unit test for usecase & handler
 - [ ] Goroutine & channel implementation for scrapping data
