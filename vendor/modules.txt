@@ -1,5 +1,8 @@
 # github.com/PuerkitoBio/goquery v1.7.1
 ## explicit
+github.com/PuerkitoBio/goquery
+# github.com/andybalholm/cascadia v1.2.0
+github.com/andybalholm/cascadia
 # github.com/bxcodec/faker v2.0.1+incompatible
 ## explicit
 github.com/bxcodec/faker
@@ -78,12 +81,13 @@ github.com/subosito/gotenv
 github.com/valyala/bytebufferpool
 # github.com/valyala/fasttemplate v1.0.1
 github.com/valyala/fasttemplate
-# github.com/vektra/mockery/v2 v2.9.4
-## explicit
 # golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
+## explicit
 golang.org/x/crypto/acme
 golang.org/x/crypto/acme/autocert
 # golang.org/x/net v0.0.0-20210614182718-04defd469f4e
+golang.org/x/net/html
+golang.org/x/net/html/atom
 golang.org/x/net/idna
 # golang.org/x/sys v0.0.0-20210423082822-04245dca01da
 golang.org/x/sys/internal/unsafeheader
@@ -94,6 +98,8 @@ golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
+# gopkg.in/go-playground/assert.v1 v1.2.1
+## explicit
 # gopkg.in/go-playground/validator.v9 v9.31.0
 ## explicit
 gopkg.in/go-playground/validator.v9

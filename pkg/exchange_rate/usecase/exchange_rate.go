@@ -2,7 +2,16 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/sirupsen/logrus"
 	"goclean/pkg/domain"
+	"goclean/pkg/helpers"
+	"log"
+	"net/http"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -18,116 +27,116 @@ func NewExchangeRateUsecase(er domain.ExchangeRateRepository, timeout time.Durat
 	}
 }
 
-//func (e *ExchangeRateUsecase) Indexing(ctx context.Context, url string) (err error) {
-//	ctx, cancel := context.WithTimeout(ctx, e.contextTimeout)
-//	defer cancel()
-//
-//	res, err := http.Get(url)
-//	if err != nil {
-//		return
-//	}
-//	defer res.Body.Close()
-//
-//	if res.StatusCode != 200 {
-//		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
-//		return
-//	}
-//
-//	doc, err := goquery.NewDocumentFromReader(res.Body)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	rows := make([]domain.ExchangeRate, 0)
-//
-//	doc.Find("tbody").Children().Each(func(i int, sel *goquery.Selection) {
-//		row := new(domain.ExchangeRate)
-//		row.Symbol = sel.Find(".sticky-col p").Text()
-//
-//		sel.Find("p").Each(func(i int, s *goquery.Selection) {
-//			doc.Find(".o-kurs-refresh-description").Each(func(i int, sel *goquery.Selection) {
-//				date, err := helpers.DateTimeConvert(sel.Find(".refresh-date").Text() + " WIB")
-//				if err != nil {
-//					logrus.Error(err)
-//				}
-//				row.Date = date
-//			})
-//			href, ok := s.Attr("rate-type")
-//			if ok {
-//				if href == "ERate-buy" {
-//					ERateBuy, err := strconv.ParseFloat(
-//						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
-//						64)
-//					if err != nil {
-//						log.Println(err)
-//					}
-//					row.ERate.Buy = ERateBuy
-//				}
-//				if href == "ERate-sell" {
-//					ERateSell, err := strconv.ParseFloat(
-//						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
-//						64)
-//					if err != nil {
-//						log.Println(err)
-//					}
-//					row.ERate.Sell = ERateSell
-//				}
-//				if href == "TT-buy" {
-//					TTBuy, err := strconv.ParseFloat(
-//						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
-//						64)
-//					if err != nil {
-//						log.Println(err)
-//					}
-//					row.TtCounter.Buy = TTBuy
-//				}
-//				if href == "TT-sell" {
-//					TTSell, err := strconv.ParseFloat(
-//						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
-//						64)
-//					if err != nil {
-//						log.Println(err)
-//					}
-//					row.TtCounter.Sell = TTSell
-//				}
-//				if href == "BN-buy" {
-//					BNbuy, err := strconv.ParseFloat(
-//						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
-//						64)
-//					if err != nil {
-//						log.Println(err)
-//					}
-//					row.BankNotes.Buy = BNbuy
-//				}
-//				if href == "BN-sell" {
-//					BNsell, err := strconv.ParseFloat(
-//						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
-//						64)
-//					if err != nil {
-//						log.Println(err)
-//					}
-//					row.BankNotes.Sell = BNsell
-//				}
-//			}
-//		})
-//
-//		rows = append(rows, *row)
-//	})
-//	bts, err := json.MarshalIndent(rows, "", "  ")
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	var exchangeRate []domain.ExchangeRate
-//	err = json.Unmarshal(bts, &exchangeRate)
-//
-//	for _, value := range exchangeRate {
-//		err = e.Store(ctx, &value)
-//	}
-//
-//	fmt.Println("Done!")
-//	return
-//}
+func (e *ExchangeRateUsecase) Indexing(ctx context.Context, url string) (err error) {
+	ctx, cancel := context.WithTimeout(ctx, e.contextTimeout)
+	defer cancel()
+
+	res, err := http.Get(url)
+	if err != nil {
+		return
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+		return
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rows := make([]domain.ExchangeRate, 0)
+
+	doc.Find("tbody").Children().Each(func(i int, sel *goquery.Selection) {
+		row := new(domain.ExchangeRate)
+		row.Symbol = sel.Find(".sticky-col p").Text()
+
+		sel.Find("p").Each(func(i int, s *goquery.Selection) {
+			doc.Find(".o-kurs-refresh-description").Each(func(i int, sel *goquery.Selection) {
+				date, err := helpers.DateTimeConvert(sel.Find(".refresh-date").Text() + " WIB")
+				if err != nil {
+					logrus.Error(err)
+				}
+				row.Date = date
+			})
+			href, ok := s.Attr("rate-type")
+			if ok {
+				if href == "ERate-buy" {
+					ERateBuy, err := strconv.ParseFloat(
+						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
+						64)
+					if err != nil {
+						log.Println(err)
+					}
+					row.ERate.Buy = ERateBuy
+				}
+				if href == "ERate-sell" {
+					ERateSell, err := strconv.ParseFloat(
+						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
+						64)
+					if err != nil {
+						log.Println(err)
+					}
+					row.ERate.Sell = ERateSell
+				}
+				if href == "TT-buy" {
+					TTBuy, err := strconv.ParseFloat(
+						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
+						64)
+					if err != nil {
+						log.Println(err)
+					}
+					row.TtCounter.Buy = TTBuy
+				}
+				if href == "TT-sell" {
+					TTSell, err := strconv.ParseFloat(
+						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
+						64)
+					if err != nil {
+						log.Println(err)
+					}
+					row.TtCounter.Sell = TTSell
+				}
+				if href == "BN-buy" {
+					BNbuy, err := strconv.ParseFloat(
+						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
+						64)
+					if err != nil {
+						log.Println(err)
+					}
+					row.BankNotes.Buy = BNbuy
+				}
+				if href == "BN-sell" {
+					BNsell, err := strconv.ParseFloat(
+						strings.ReplaceAll(strings.ReplaceAll(s.Text(), ".", ""), ",", ".") ,
+						64)
+					if err != nil {
+						log.Println(err)
+					}
+					row.BankNotes.Sell = BNsell
+				}
+			}
+		})
+
+		rows = append(rows, *row)
+	})
+	bts, err := json.MarshalIndent(rows, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var exchangeRate []domain.ExchangeRate
+	err = json.Unmarshal(bts, &exchangeRate)
+
+	for _, value := range exchangeRate {
+		err = e.Store(ctx, &value)
+	}
+
+	fmt.Println("Done!")
+	return
+}
 
 func (e *ExchangeRateUsecase) GetExchangeRateByDate(ctx context.Context, startDate string, endDate string) (resp []domain.ExchangeRate, err error) {
 	ctx, cancel := context.WithTimeout(ctx, e.contextTimeout)

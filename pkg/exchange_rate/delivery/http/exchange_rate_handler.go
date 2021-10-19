@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/labstack/echo"
+	"github.com/spf13/viper"
 	"goclean/pkg/domain"
 	"goclean/pkg/helpers"
 	"net/http"
@@ -17,7 +18,7 @@ type ExchangeRateHandler struct {
 
 func NewExchangeRateHandler(e *echo.Echo, exc domain.ExchangeRateUsecase, base string) {
 	handler := &ExchangeRateHandler{ExchangeRateUsecase:exc}
-	//e.GET(base + "/indexing", handler.Indexing)
+	e.GET(base + "/indexing", handler.Indexing)
 	e.GET(base + "/kurs/:symbol", handler.GetExchangeRateByCurrency)
 	e.GET(base + "/kurs", handler.GetExchangeRateByDate)
 	e.POST(base + "/kurs", handler.Store)
@@ -25,17 +26,17 @@ func NewExchangeRateHandler(e *echo.Echo, exc domain.ExchangeRateUsecase, base s
 	e.DELETE(base + "/kurs/curr/:date", handler.Delete)
 }
 
-//func (h *ExchangeRateHandler) Indexing(context echo.Context) error {
-//	ctx := context.Request().Context()
-//
-//	scrappingUrl := viper.GetString(`scrapping_url`)
-//	err := h.ExchangeRateUsecase.Indexing(ctx, scrappingUrl)
-//	if err != nil {
-//		return context.JSON(helpers.GetStatusCode(err), ResponseError{Message: err.Error()})
-//	}
-//
-//	return context.JSON(http.StatusOK, ResponseError{Message: "Done!"})
-//}
+func (h *ExchangeRateHandler) Indexing(context echo.Context) error {
+	ctx := context.Request().Context()
+
+	scrappingUrl := viper.GetString(`scrapping_url`)
+	err := h.ExchangeRateUsecase.Indexing(ctx, scrappingUrl)
+	if err != nil {
+		return context.JSON(helpers.GetStatusCode(err), ResponseError{Message: err.Error()})
+	}
+
+	return context.JSON(http.StatusOK, ResponseError{Message: "Done!"})
+}
 
 func (h *ExchangeRateHandler) GetExchangeRateByDate(context echo.Context) error {
 	startDate := context.QueryParam("startdate")
