@@ -3,7 +3,6 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"goclean/pkg/domain"
 	"goclean/pkg/exchange_rate/repository/mysql/query"
@@ -15,10 +14,6 @@ type mysqlExchangeRateRepository struct {
 
 func NewMysqlExchangeRateRepository(Conn *sql.DB) domain.ExchangeRateRepository {
 	return &mysqlExchangeRateRepository{Conn}
-}
-
-func (m *mysqlExchangeRateRepository) Indexing(ctx context.Context) error {
-	panic("implement me")
 }
 
 func (m *mysqlExchangeRateRepository) fetch(ctx context.Context, query string, args ...interface{}) (result []domain.ExchangeRate, err error) {
@@ -85,8 +80,6 @@ func (m *mysqlExchangeRateRepository) GetExchangeRateBySingleDateOnly(ctx contex
 }
 
 func (m *mysqlExchangeRateRepository) GetExchangeRateByCurrency(ctx context.Context, currency string, startDate string, endDate string) (resp []domain.ExchangeRate, err error) {
-	fmt.Printf("curr %s start %s end %s", currency, startDate, endDate)
-
 	resp, err = m.fetch(ctx, query.GetExchangeRateByCurrency, currency, startDate, endDate)
 	if err != nil {
 		return nil, err

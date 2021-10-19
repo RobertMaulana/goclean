@@ -1,8 +1,9 @@
 # github.com/PuerkitoBio/goquery v1.7.1
 ## explicit
-github.com/PuerkitoBio/goquery
-# github.com/andybalholm/cascadia v1.2.0
-github.com/andybalholm/cascadia
+# github.com/bxcodec/faker v2.0.1+incompatible
+## explicit
+github.com/bxcodec/faker
+github.com/bxcodec/faker/support/slice
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
 # github.com/fsnotify/fsnotify v1.4.7
@@ -70,6 +71,7 @@ github.com/stretchr/objx
 ## explicit
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/mock
+github.com/stretchr/testify/require
 # github.com/subosito/gotenv v1.2.0
 github.com/subosito/gotenv
 # github.com/valyala/bytebufferpool v1.0.0
@@ -82,8 +84,6 @@ github.com/valyala/fasttemplate
 golang.org/x/crypto/acme
 golang.org/x/crypto/acme/autocert
 # golang.org/x/net v0.0.0-20210614182718-04defd469f4e
-golang.org/x/net/html
-golang.org/x/net/html/atom
 golang.org/x/net/idna
 # golang.org/x/sys v0.0.0-20210423082822-04245dca01da
 golang.org/x/sys/internal/unsafeheader

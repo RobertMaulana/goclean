@@ -15,6 +15,6 @@
     "user": "root",
     "pass": "",
     "name": "goclean"
-  }
-
+  },
+  "scrapping_url": "https://www.bca.co.id/id/informasi/kurs"
 }

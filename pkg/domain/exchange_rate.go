@@ -20,7 +20,7 @@ type ExchangeRateDetail struct {
 }
 
 type ExchangeRateUsecase interface {
-	Indexing(ctx context.Context) (err error)
+	//Indexing(ctx context.Context, url string) (err error)
 	GetExchangeRateByDate(ctx context.Context, startDate string, endDate string) (resp []ExchangeRate, err error)
 	GetExchangeRateByCurrency(ctx context.Context, symbol string, startDate string, endDate string) (resp []ExchangeRate, err error)
 	GetExchangeRateBySingleDate(ctx context.Context, symbol string, date string) (resp []ExchangeRate, err error)
